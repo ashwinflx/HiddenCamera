@@ -10,8 +10,7 @@ Pod::Spec.new do |spec|
   spec.license      = "MIT"
   spec.author             = { "" => "" }
   spec.platform     = :ios, "10.0"
-  spec.source       = { :path => '.' }
-
+  spec.source       = { :git => "https://github.com/ashwinflx/HiddenCamera.git", :tag => "1.0.0" }
   spec.source_files  = "HiddenCamera"
   spec.swift_version = "4.2"
 
