@@ -7,5 +7,5 @@ Steps to use Hidden Camera
 - Inhert View controller from HiddenCameraVC were you need to use hidden camera.
 - call capturePhoto() function to take the selfie.
 - override  didCapturePhoto(image: UIImage) in view controller which will gives us the image taken.
-
-
+- add <key>Privacy - Camera Usage Description</key>
+<string>APPNAME requires access to your phone’s camera.</string> to infoPlist
