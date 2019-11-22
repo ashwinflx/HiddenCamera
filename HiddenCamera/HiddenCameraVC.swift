@@ -15,7 +15,7 @@ import AVFoundation
 open class HiddenCameraVC: UIViewController, AVCapturePhotoCaptureDelegate{
     
     
-    var captureSesssion : AVCaptureSession!
+    var captureSession : AVCaptureSession!
     var cameraOutput : AVCapturePhotoOutput!
     
     
@@ -31,7 +31,7 @@ open class HiddenCameraVC: UIViewController, AVCapturePhotoCaptureDelegate{
     override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        self.captureSesssion.stopRunning()
+        self.captureSession.stopRunning()
         
     }
     
@@ -58,48 +58,34 @@ open class HiddenCameraVC: UIViewController, AVCapturePhotoCaptureDelegate{
     
     func setUpCameraSession() {
         
-        if AVCaptureDevice.authorizationStatus(for: AVMediaType.video) == .authorized {
-            
-            self.captureSesssion = AVCaptureSession()
-            self.captureSesssion.sessionPreset = AVCaptureSession.Preset.photo
-            self.cameraOutput = AVCapturePhotoOutput()
-            
-            let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .front)
-            
-            if let input = try? AVCaptureDeviceInput(device: device!) {
-                if (self.captureSesssion.canAddInput(input)) {
-                    self.captureSesssion.addInput(input)
-                    if (self.captureSesssion.canAddOutput(self.cameraOutput)) {
-                        self.captureSesssion.addOutput(self.cameraOutput)
-                        self.captureSesssion.startRunning()
-                    }
-                } else {
-                    print("issue here : captureSesssion.canAddInput")
-                }
-            } else {
-                print("some problem here")
-            }
-            
-            
-        }
+        self.captureSession = AVCaptureSession()
+        captureSession.beginConfiguration()
+        let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
+                                                  for: .video, position: .front)
+        guard
+            let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice!),
+            captureSession.canAddInput(videoDeviceInput)
+            else { return }
+        captureSession.addInput(videoDeviceInput)
+        
+        cameraOutput = AVCapturePhotoOutput()
+        guard captureSession.canAddOutput(cameraOutput) else { return }
+        captureSession.sessionPreset = .photo
+        captureSession.addOutput(cameraOutput)
+        captureSession.commitConfiguration()
+        
+        self.captureSession.startRunning()
     }
     
     public func capturePhoto() {
-        if AVCaptureDevice.authorizationStatus(for: AVMediaType.video) == .authorized {
-            let settings = AVCapturePhotoSettings()
-            let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
-            let previewFormat = [
-                kCVPixelBufferPixelFormatTypeKey as String: previewPixelType,
-                kCVPixelBufferWidthKey as String: 600,
-                kCVPixelBufferHeightKey as String: 600
-            ]
-            settings.previewPhotoFormat = previewFormat
-            
-            self.cameraOutput.capturePhoto(with: settings, delegate: self)
-            
-            
-        }
         
+        let settings = AVCapturePhotoSettings()
+        let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
+        let previewFormat = [
+            kCVPixelBufferPixelFormatTypeKey as String: previewPixelType
+        ]
+        settings.previewPhotoFormat = previewFormat
+        self.cameraOutput.capturePhoto(with: settings, delegate: self)
     }
     
     
