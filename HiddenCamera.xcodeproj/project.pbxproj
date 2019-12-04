@@ -7,11 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B2800882397A80800B759DB /* FaceCaptureV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2800872397A80800B759DB /* FaceCaptureV.swift */; };
+		0B28008C2397A81E00B759DB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2800892397A81E00B759DB /* Constants.swift */; };
+		0B28008D2397A81E00B759DB /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B28008A2397A81E00B759DB /* UIImage+Extension.swift */; };
+		0B28008E2397A81E00B759DB /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B28008B2397A81E00B759DB /* Utils.swift */; };
+		0B2800912397A84F00B759DB /* OpenCVWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B28008F2397A84F00B759DB /* OpenCVWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0B2800922397A84F00B759DB /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B2800902397A84F00B759DB /* OpenCVWrapper.mm */; };
 		0BFF7C70238649C70069FB05 /* HiddenCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = 0BFF7C6E238649C70069FB05 /* HiddenCamera.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0BFF7C77238649E40069FB05 /* HiddenCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BFF7C76238649E40069FB05 /* HiddenCameraVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B2800872397A80800B759DB /* FaceCaptureV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceCaptureV.swift; sourceTree = "<group>"; };
+		0B2800892397A81E00B759DB /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		0B28008A2397A81E00B759DB /* UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
+		0B28008B2397A81E00B759DB /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		0B28008F2397A84F00B759DB /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
+		0B2800902397A84F00B759DB /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		0BFF7C6B238649C70069FB05 /* HiddenCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HiddenCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BFF7C6E238649C70069FB05 /* HiddenCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HiddenCamera.h; sourceTree = "<group>"; };
 		0BFF7C6F238649C70069FB05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -29,6 +41,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0B2800862397A7DA00B759DB /* OpenCVWrapper */ = {
+			isa = PBXGroup;
+			children = (
+				0B28008F2397A84F00B759DB /* OpenCVWrapper.h */,
+				0B2800902397A84F00B759DB /* OpenCVWrapper.mm */,
+			);
+			path = OpenCVWrapper;
+			sourceTree = "<group>";
+		};
 		0BFF7C61238649C70069FB05 = {
 			isa = PBXGroup;
 			children = (
@@ -48,9 +69,14 @@
 		0BFF7C6D238649C70069FB05 /* HiddenCamera */ = {
 			isa = PBXGroup;
 			children = (
+				0B2800862397A7DA00B759DB /* OpenCVWrapper */,
 				0BFF7C6E238649C70069FB05 /* HiddenCamera.h */,
 				0BFF7C6F238649C70069FB05 /* Info.plist */,
 				0BFF7C76238649E40069FB05 /* HiddenCameraVC.swift */,
+				0B2800872397A80800B759DB /* FaceCaptureV.swift */,
+				0B2800892397A81E00B759DB /* Constants.swift */,
+				0B28008A2397A81E00B759DB /* UIImage+Extension.swift */,
+				0B28008B2397A81E00B759DB /* Utils.swift */,
 			);
 			path = HiddenCamera;
 			sourceTree = "<group>";
@@ -63,6 +89,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0BFF7C70238649C70069FB05 /* HiddenCamera.h in Headers */,
+				0B2800912397A84F00B759DB /* OpenCVWrapper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,7 +161,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B28008E2397A81E00B759DB /* Utils.swift in Sources */,
+				0B2800882397A80800B759DB /* FaceCaptureV.swift in Sources */,
+				0B2800922397A84F00B759DB /* OpenCVWrapper.mm in Sources */,
 				0BFF7C77238649E40069FB05 /* HiddenCameraVC.swift in Sources */,
+				0B28008C2397A81E00B759DB /* Constants.swift in Sources */,
+				0B28008D2397A81E00B759DB /* UIImage+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +308,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = HiddenCamera/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -306,7 +338,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = HiddenCamera/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

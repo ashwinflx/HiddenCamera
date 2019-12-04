@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <OpenCVWrapper.h>
 
 //! Project version number for HiddenCamera.
 FOUNDATION_EXPORT double HiddenCameraVersionNumber;
