@@ -41,15 +41,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0B2800862397A7DA00B759DB /* OpenCVWrapper */ = {
-			isa = PBXGroup;
-			children = (
-				0B28008F2397A84F00B759DB /* OpenCVWrapper.h */,
-				0B2800902397A84F00B759DB /* OpenCVWrapper.mm */,
-			);
-			path = OpenCVWrapper;
-			sourceTree = "<group>";
-		};
 		0BFF7C61238649C70069FB05 = {
 			isa = PBXGroup;
 			children = (
@@ -69,8 +60,9 @@
 		0BFF7C6D238649C70069FB05 /* HiddenCamera */ = {
 			isa = PBXGroup;
 			children = (
-				0B2800862397A7DA00B759DB /* OpenCVWrapper */,
 				0BFF7C6E238649C70069FB05 /* HiddenCamera.h */,
+				0B2800902397A84F00B759DB /* OpenCVWrapper.mm */,
+				0B28008F2397A84F00B759DB /* OpenCVWrapper.h */,
 				0BFF7C6F238649C70069FB05 /* Info.plist */,
 				0BFF7C76238649E40069FB05 /* HiddenCameraVC.swift */,
 				0B2800872397A80800B759DB /* FaceCaptureV.swift */,
