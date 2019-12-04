@@ -9,7 +9,7 @@ Pod::Spec.new do |spec|
   spec.homepage     = "http://EXAMPLE/HiddenCamera"
   spec.license      = "MIT"
   spec.author             = { "" => "" }
-  spec.platform     = :ios, "10.0"
+  spec.platform     = :ios, "12.0"
   spec.source       = { :git => "https://github.com/ashwinflx/HiddenCamera.git", :tag => "1.0.0" }
   spec.source_files  = "HiddenCamera"
   spec.swift_version = "4.2"
