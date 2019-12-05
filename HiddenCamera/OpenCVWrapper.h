@@ -1,9 +1,9 @@
 //
-//  OpenCVWrapper.h
-//  TestOpenCVSwift
+//  HiddenCamera.h
+//  HiddenCamera
 //
-//  Created by Denow Cleetus on 25/09/19.
-//  Copyright © 2019 Denow Cleetus. All rights reserved.
+//  Created by qbuser on 21/11/19.
+//  Copyright © 2019 QBurst. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

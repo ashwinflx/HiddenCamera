@@ -1,16 +1,15 @@
 //
-//  FaceCaptureVC.swift
-//  SecretCamera
+//  HiddenCamera.h
+//  HiddenCamera
 //
-//  Created by qbuser on 03/12/19.
+//  Created by qbuser on 21/11/19.
 //  Copyright © 2019 QBurst. All rights reserved.
 //
-
 import UIKit
 import Vision
 import AVFoundation
 
-open class FaceCaptureV: UIViewController {
+open class FaceCaptureVC: UIViewController {
     
     //Properties
     private let faceDetectionRequest = VNSequenceRequestHandler()
@@ -25,6 +24,11 @@ open class FaceCaptureV: UIViewController {
     private var videoDataOutput: AVCaptureVideoDataOutput? = nil
     
     private var isRunning: Bool = false
+    private var videoOutputAdded: Bool = false
+    
+    private var timer = Timer()
+    var sessionDurationLimit: Double? = nil
+    
     private var capturedImages = [UIImage]()
     private var imageCount: Int = Constants.imageCountToCapture
     private var imageVarienceNeeded = Constants.imageVarianceThresholdDefault
@@ -37,6 +41,12 @@ open class FaceCaptureV: UIViewController {
             self.configureSession()
         }
         
+    }
+    
+    override open func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.stopRunningSession()
+        self.timer.invalidate()
     }
     
     func configureSession() {
@@ -58,9 +68,22 @@ open class FaceCaptureV: UIViewController {
             }
             
             addDeviceInput(device: cameraDevice)
-            if addVideoDataOutput() == true {
-                startRunningSession()
-            }
+            videoOutputAdded = addVideoDataOutput()
+        }
+    }
+    
+    public func startCapturingSession() {
+        if videoOutputAdded {
+            self.capturedImages.removeAll()
+            startRunningSession()
+            setupTimer()
+            
+        }
+    }
+    
+    func setupTimer() {
+        if let timerValue = sessionDurationLimit {
+            timer = Timer.scheduledTimer(timeInterval: timerValue, target: self, selector: #selector(captureSessionTimeout), userInfo: nil, repeats: true)
         }
     }
     
@@ -73,7 +96,6 @@ open class FaceCaptureV: UIViewController {
         }
         catch {
             print("Error in adding device input")
-            
         }
         
     }
@@ -107,6 +129,11 @@ open class FaceCaptureV: UIViewController {
             isRunning = true
             print("Start Running Session")
         }
+    }
+    
+    @objc func captureSessionTimeout() {
+        stopRunningSession()
+        timer.invalidate()
         
     }
     
@@ -125,7 +152,7 @@ open class FaceCaptureV: UIViewController {
 }
 
 
-extension FaceCaptureV : AVCaptureVideoDataOutputSampleBufferDelegate {
+extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
     
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
@@ -133,7 +160,7 @@ extension FaceCaptureV : AVCaptureVideoDataOutputSampleBufferDelegate {
         let attachments = CMCopyDictionaryOfAttachments(allocator: kCFAllocatorDefault, target: sampleBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate)
         let ciImage = CIImage(cvImageBuffer: pixelBuffer!, options: attachments as? [CIImageOption : Any])
         let ciImageWithOrientation = ciImage.oriented(forExifOrientation: Int32(UIImage.Orientation.left.rawValue))
-
+        
         
         do {
             _ = try captureOnFaceDetect(on: ciImageWithOrientation)
@@ -149,58 +176,58 @@ extension FaceCaptureV : AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
     
-        func captureOnFaceDetect(on image: CIImage) throws {
-            try? faceDetectionRequest.perform([faceDetection], on: image)
-            if let results = faceDetection.results as? [VNFaceObservation], results.count > 0 {
-                if let face = results.first, results.count == 1 {
-                    operationQueueImgDraw.addOperation { [weak self] in
-                        guard let strongSelf = self else {
+    func captureOnFaceDetect(on image: CIImage) throws {
+        try? faceDetectionRequest.perform([faceDetection], on: image)
+        if let results = faceDetection.results as? [VNFaceObservation], results.count > 0 {
+            if let face = results.first, results.count == 1 {
+                operationQueueImgDraw.addOperation { [weak self] in
+                    guard let strongSelf = self else {
+                        return
+                    }
+                    
+                    Utils.detectFaceAngleFromFaceObservation(face: face, onCompletion: { (yawDegree, rollDegree, error) in
+                        guard let yaw = yawDegree, let roll = rollDegree else {
+                            debugPrint("Error: \(String(describing: error?.localizedDescription))")
                             return
                         }
-    
-                        Utils.detectFaceAngleFromFaceObservation(face: face, onCompletion: { (yawDegree, rollDegree, error) in
-                            guard let yaw = yawDegree, let roll = rollDegree else {
-                                debugPrint("Error: \(String(describing: error?.localizedDescription))")
-                                return
-                            }
-    
-                            if yaw == 0 && roll == 0 {
-    
-                                // Since OpenCV function is not accepting 'UIImage(ciImage: image)'
-                                let originalImage = UIImage(ciImage: image)
-                                UIGraphicsBeginImageContextWithOptions(originalImage.size, false, originalImage.scale)
-                                originalImage.draw(in: CGRect(origin: .zero, size: originalImage.size))
-                                let newDrawnImage = UIGraphicsGetImageFromCurrentImageContext()
-                                UIGraphicsEndImageContext()
-                                
-                                if let img = newDrawnImage {
-                                    let variance = OpenCVWrapper.imageVariance(img)
-                                    debugPrint("variance: \(variance)")
-                                    if variance > strongSelf.imageVarienceNeeded {
-                                        DispatchQueue.main.async {
-                                            strongSelf.operationQueueImgDraw.cancelAllOperations()
-                                            debugPrint("eligible image")
-                                            debugPrint("face yaw: \(String(describing: yaw))")
-                                            if strongSelf.isRunning {
-                                                strongSelf.stopRunningSession()
-                                                print("Image Captured")
-                                                strongSelf.updateListWithImageCaptured(image: img)
-                                            }
+                        
+                        if yaw == 0 && roll == 0 {
+                            
+                            // Since OpenCV function is not accepting 'UIImage(ciImage: image)'
+                            let originalImage = UIImage(ciImage: image)
+                            UIGraphicsBeginImageContextWithOptions(originalImage.size, false, originalImage.scale)
+                            originalImage.draw(in: CGRect(origin: .zero, size: originalImage.size))
+                            let newDrawnImage = UIGraphicsGetImageFromCurrentImageContext()
+                            UIGraphicsEndImageContext()
+                            
+                            if let img = newDrawnImage {
+                                let variance = OpenCVWrapper.imageVariance(img)
+                                debugPrint("variance: \(variance)")
+                                if variance > strongSelf.imageVarienceNeeded {
+                                    DispatchQueue.main.async {
+                                        strongSelf.operationQueueImgDraw.cancelAllOperations()
+                                        debugPrint("eligible image")
+                                        debugPrint("face yaw: \(String(describing: yaw))")
+                                        if strongSelf.isRunning {
+                                            strongSelf.stopRunningSession()
+                                            print("Image Captured")
+                                            strongSelf.updateListWithImageCaptured(image: img)
                                         }
                                     }
                                 }
-                            } else {
-                                debugPrint("face angle != 0")
                             }
-                        })
-                    }
-                } else if results.count > 1 {
-                    throw FaceDetectionError.multipleFaces
+                        } else {
+                            debugPrint("face angle != 0")
+                        }
+                    })
                 }
+            } else if results.count > 1 {
+                throw FaceDetectionError.multipleFaces
             }
         }
+    }
     
-
+    
     func updateListWithImageCaptured(image: UIImage) {
         self.capturedImages.append(image)
         if (self.capturedImages.count <= self.imageCount) {

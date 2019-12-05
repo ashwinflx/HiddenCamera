@@ -1,11 +1,10 @@
 //
-//  Constants.swift
-//  FacialBiometric
+//  HiddenCamera.h
+//  HiddenCamera
 //
-//  Created by Denow Cleetus on 30/09/19.
-//  Copyright © 2019 Rija Mairaj. All rights reserved.
+//  Created by qbuser on 21/11/19.
+//  Copyright © 2019 QBurst. All rights reserved.
 //
-
 
 // MARK: - Constants
 enum Constants {
@@ -13,13 +12,6 @@ enum Constants {
     static let error = "Error"
     static let ok = "OK"
     static let imageCountToCapture = 5
-    
-    // MARK: - UserDefaultsKey
-    enum UserDefaultsKey {
-        static let latitude = "Latitude"
-        static let longitude = "Longitude"
-        static let imageVarianceThreshold = "imageVarianceThreshold"
-    }
     
     enum NotificationNames {
         static let reachability = NSNotification.Name(rawValue: "Reachability")

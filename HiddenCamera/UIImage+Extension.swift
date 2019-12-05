@@ -1,9 +1,9 @@
 //
-//  UIImage+Extension.swift
-//  FacialBiometric
+//  HiddenCamera.h
+//  HiddenCamera
 //
-//  Created by Denow Cleetus on 30/09/19.
-//  Copyright © 2019 Rija Mairaj. All rights reserved.
+//  Created by qbuser on 21/11/19.
+//  Copyright © 2019 QBurst. All rights reserved.
 //
 
 import Vision

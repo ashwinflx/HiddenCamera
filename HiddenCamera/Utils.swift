@@ -1,9 +1,9 @@
 //
-//  Utils.swift
-//  FacialBiometric
+//  HiddenCamera.h
+//  HiddenCamera
 //
-//  Created by Denow Cleetus on 30/09/static func19.
-//  Copyright © 2019 Rija Mairaj. All rights reserved.
+//  Created by qbuser on 21/11/19.
+//  Copyright © 2019 QBurst. All rights reserved.
 //
 
 
@@ -25,12 +25,5 @@ class Utils {
     static func radiansToDegree(_ angleInRad: Double) -> Double {
         let angleDegree = angleInRad * 180.0 / Double.pi
         return angleDegree
-    }
-
-    static func imageVarianceThreshold() -> Double {
-        let valFromDefaults = UserDefaults.standard.double(forKey: Constants.UserDefaultsKey.imageVarianceThreshold)
-        let val = (valFromDefaults == 0) ? Constants.imageVarianceThresholdDefault : valFromDefaults
-
-        return val
     }
 }
