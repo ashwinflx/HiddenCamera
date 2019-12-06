@@ -72,12 +72,13 @@ open class FaceCaptureVC: UIViewController {
         }
     }
     
-    public func startCapturingSession() {
+    public func startCapturingSession(imageCount: Int? = nil, varienceNeeded: Double? = nil ) {
         if videoOutputAdded {
+            self.imageCount = imageCount ?? Constants.imageCountToCapture
+            self.imageVarienceNeeded = varienceNeeded ?? Constants.imageVarianceThresholdDefault
             self.capturedImages.removeAll()
             startRunningSession()
             setupTimer()
-            
         }
     }
     
