@@ -6,9 +6,9 @@ HiddenCamera help to take secquence of image when it detect users face.
 
 *****Steps to use Hidden Camera*****
 
-- Add pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '1.0.6' to podFile of the project.
+- Add pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '1.0.7' to podFile of the project.
 
-    pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '1.0.6'
+    pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '1.0.7'
     
 - Import HiddenCamera module to file were we want to use hidden camera.
 
@@ -16,18 +16,24 @@ HiddenCamera help to take secquence of image when it detect users face.
     
 - Inhert View controller from HiddenCameraVC were you need to use hidden camera.
 
-    class ViewController: HiddenCameraVC
+    class ViewController: FaceCaptureVC
     
-- call capturePhoto() function to take the selfie.
+- call startRunningSession() function to start the session.
 
-      @IBAction func CapturePhotoTapped(_ sender: Any) {
-        capturePhoto()
-     }
-     
-- override  didCapturePhoto(image: UIImage) in view controller which will gives us the image taken.
+//Imagecount: number of image to be returned. default is 5
 
-     override func didCapturePhoto(image: UIImage) {
-        self.photoPreviewView.image = image
+//varienceNeeded: The threshold varience with which the image need to be captured. default is 100
+
+  @IBAction func didPressTakePhoto(_ sender: UIButton) {
+      //  startRunningSession()
+        startCapturingSession(imageCount: 3, varienceNeeded: 75)
+    }
+    
+    
+- override  didCapturePhoto(image: UIImage) in view controller which will gives us the images taken.
+
+     override func didCapturePhoto(images: [UIImage]) {
+        self.photoPreviewView.image = image.last
     }
     
 - add <key>Privacy - Camera Usage Description</key>
