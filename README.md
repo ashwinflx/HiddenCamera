@@ -17,6 +17,10 @@ HiddenCamera help to take selfie of user while actively using the app
     
 - call startCapturingSession() function to take the selfie.
 
+//imageCount: number of images to be returned. default is 5
+//varienceNeeded : The threshould image varience need. default is 100
+func startCapturingSession(imageCount: Int? = nil, varienceNeeded: Double? = nil )
+
       @IBAction func CapturePhotoTapped(_ sender: Any) {
         startCapturingSession()
      }
@@ -32,10 +36,6 @@ HiddenCamera help to take selfie of user while actively using the app
  set sessionDurationLimit in the viewController were we are using HiddenCamera.
  
  ex: sessionDurationLimit = 10
- 
- - Can set the number of photos need to be taken by setting imageCount. Default is 5.
- 
- - Can set the image varience by imageVarienceNeeded. defaukt is 100. 
     
 - add <key>Privacy - Camera Usage Description</key>
 <string>APPNAME requires access to your phone’s camera.</string> to infoPlist
