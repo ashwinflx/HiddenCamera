@@ -6,9 +6,9 @@ HiddenCamera help to take secquence of image when it detect users face.
 
 *****Steps to use Hidden Camera*****
 
-- Add pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '1.0.7' to podFile of the project.
+- Add pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '2.0.0' to podFile of the project.
 
-    pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '1.0.7'
+    pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '2.0.0'
     
 - Import HiddenCamera module to file were we want to use hidden camera.
 
