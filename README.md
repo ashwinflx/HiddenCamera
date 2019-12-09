@@ -30,11 +30,13 @@ HiddenCamera help to take secquence of image when it detect users face.
     }
     
     
-- override  didCapturePhoto(image: UIImage) in view controller which will gives us the images taken.
+- override  didCapturePhoto(image: [UIImage]) in view controller which will gives us the images taken.
 
      override func didCapturePhoto(images: [UIImage]) {
         self.photoPreviewView.image = image.last
     }
+- Timer can be set to limit the session running time sessionDurationLimit.  
+    
     
 - add <key>Privacy - Camera Usage Description</key>
 <string>APPNAME requires access to your phone’s camera.</string> to infoPlist
