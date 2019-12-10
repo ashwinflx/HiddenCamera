@@ -236,7 +236,6 @@ extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
                 [unowned self] in
                 self.startRunningSession()
             }
-            self.didCapturePhoto(images: self.capturedImages)
         } else {
             self.didCapturePhoto(images: self.capturedImages)
         }
