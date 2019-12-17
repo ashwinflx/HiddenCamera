@@ -212,7 +212,7 @@ extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
                                         if strongSelf.isRunning {
                                             strongSelf.stopRunningSession()
                                             print("Image Captured")
-                                            strongSelf.updateListWithImageCaptured(image: img)
+                                            strongSelf.detectAndCropfaceImagee(on: image)
                                         }
                                     }
                                 }
@@ -224,6 +224,23 @@ extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
                 }
             } else if results.count > 1 {
                 throw FaceDetectionError.multipleFaces
+            }
+        }
+    }
+    
+    private func detectAndCropfaceImagee(on image: CIImage) {
+        try? faceDetectionRequest.perform([faceDetection], on: image)
+        if let results = faceDetection.results as? [VNFaceObservation], results.count > 0 {
+            for face in results {
+                let transform = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: -orginalImage.size.height)
+                let translate = CGAffineTransform.identity.scaledBy(x: orginalImage.size.width, y: orginalImage.size.height)
+                let facebounds = face.boundingBox.applying(translate).applying(transform)
+                let croppedCGImage:CIImage = image.cropped(to: facebounds)
+                //Creating a context inorder fix issue after cropping(croping not giving correct output).
+                let ciContext = CIContext()
+                let cgImage = ciContext.createCGImage(image, from: croppedCGImage.extent)
+                let cropImage = UIImage(cgImage: cgImage!)
+                updateListWithImageCaptured(image: cropImage)
             }
         }
     }
