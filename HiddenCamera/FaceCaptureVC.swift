@@ -232,6 +232,7 @@ extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
         try? faceDetectionRequest.perform([faceDetection], on: image)
         if let results = faceDetection.results as? [VNFaceObservation], results.count > 0 {
             for face in results {
+                let orginalImage = UIImage(ciImage: image)
                 let transform = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: -orginalImage.size.height)
                 let translate = CGAffineTransform.identity.scaledBy(x: orginalImage.size.width, y: orginalImage.size.height)
                 let facebounds = face.boundingBox.applying(translate).applying(transform)
