@@ -25,16 +25,18 @@ HiddenCamera help to take secquence of image when it detect users face.
 //varienceNeeded: The threshold varience with which the image need to be captured. default is 100.
 
   
-  
+  ```swift
    func didPressTakePhoto(_ sender: UIButton) {
         startCapturingSession(imageCount: 3, varienceNeeded: 75)
    } 
- 
+ ```
  - override  didCapturePhoto(image: [UIImage]) in view controller which will gives us the images taken.
 
-     ```override func didCapturePhoto(images: [UIImage]) {
+     ```swift
+     override func didCapturePhoto(images: [UIImage]) {
         self.photoPreviewView.image = image.last
-    }```
+    }
+    ```
 - Timer can be set to limit the session running time sessionDurationLimit.  
     
     
