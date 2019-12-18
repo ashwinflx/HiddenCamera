@@ -212,7 +212,7 @@ extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
                                         if strongSelf.isRunning {
                                             strongSelf.stopRunningSession()
                                             print("Image Captured")
-                                            strongSelf.detectAndCropfaceImagee(on: image)
+                                            strongSelf.detectAndCropfaceImage(on: image)
                                         }
                                     }
                                 }
@@ -228,20 +228,18 @@ extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
     
-    private func detectAndCropfaceImagee(on image: CIImage) {
+    private func detectAndCropfaceImage(on image: CIImage) {
         try? faceDetectionRequest.perform([faceDetection], on: image)
         if let results = faceDetection.results as? [VNFaceObservation], results.count > 0 {
+            let orginalImage = Utils.convert(cmage: image)
             for face in results {
-                let orginalImage = UIImage(ciImage: image)
                 let transform = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: -orginalImage.size.height)
                 let translate = CGAffineTransform.identity.scaledBy(x: orginalImage.size.width, y: orginalImage.size.height)
-                let facebounds = face.boundingBox.applying(translate).applying(transform)
-                let croppedCGImage:CIImage = image.cropped(to: facebounds)
-                //Creating a context inorder fix issue after cropping(croping not giving correct output).
-                let ciContext = CIContext()
-                let cgImage = ciContext.createCGImage(image, from: croppedCGImage.extent)
-                let cropImage = UIImage(cgImage: cgImage!)
-                updateListWithImageCaptured(image: cropImage)
+                // The coordinates are normalized to the dimensions of the processed image, with the origin at the image's lower-left corner.
+                var facebounds = face.boundingBox.applying(translate).applying(transform)
+                facebounds.size.height += 40
+                let cropImage = orginalImage.crop(rect: facebounds)
+                self.updateListWithImageCaptured(image: cropImage)
             }
         }
     }

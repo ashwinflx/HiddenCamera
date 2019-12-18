@@ -8,6 +8,7 @@
 
 
 import Vision
+import UIKit
 
 class Utils {
 
@@ -25,5 +26,12 @@ class Utils {
     static func radiansToDegree(_ angleInRad: Double) -> Double {
         let angleDegree = angleInRad * 180.0 / Double.pi
         return angleDegree
+    }
+    
+    static func convert(cmage:CIImage) -> UIImage{
+        let context:CIContext = CIContext.init(options: nil)
+        let cgImage:CGImage = context.createCGImage(cmage, from: cmage.extent)!
+        let image:UIImage = UIImage.init(cgImage: cgImage)
+        return image
     }
 }
