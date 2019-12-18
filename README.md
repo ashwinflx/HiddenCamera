@@ -16,7 +16,7 @@ HiddenCamera help to take secquence of image when it detect users face.
     
 - Inhert View controller from HiddenCameraVC were you need to use hidden camera.
 
-    ```class ViewController: FaceCaptureVC
+    ```class ViewController: FaceCaptureVC```
     
 - call startRunningSession() function to start the session.
 
@@ -28,12 +28,9 @@ HiddenCamera help to take secquence of image when it detect users face.
   
    func didPressTakePhoto(_ sender: UIButton) {
         startCapturingSession(imageCount: 3, varienceNeeded: 75)
-    } 
+   } 
  
-    
-    
-    
-- override  didCapturePhoto(image: [UIImage]) in view controller which will gives us the images taken.
+ - override  didCapturePhoto(image: [UIImage]) in view controller which will gives us the images taken.
 
      ```override func didCapturePhoto(images: [UIImage]) {
         self.photoPreviewView.image = image.last
