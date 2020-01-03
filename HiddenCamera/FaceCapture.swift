@@ -9,7 +9,12 @@ import UIKit
 import Vision
 import AVFoundation
 
-open class FaceCaptureVC: UIViewController {
+
+public protocol FaceDetectorProtocol: class {
+    func didCapturePhoto(images: [UIImage])
+}
+
+open class FaceCapture: NSObject {
     
     //Properties
     private let faceDetectionRequest = VNSequenceRequestHandler()
@@ -26,28 +31,32 @@ open class FaceCaptureVC: UIViewController {
     private var isRunning: Bool = false
     private var videoOutputAdded: Bool = false
     
-    private var timer = Timer()
     var sessionDurationLimit: Double? = nil
+    weak var delegate:FaceDetectorProtocol?
     
     private var capturedImages = [UIImage]()
     private var imageCount: Int = Constants.imageCountToCapture
     private var imageVarienceNeeded = Constants.imageVarianceThresholdDefault
     
-    override open func viewDidLoad() {
-        super.viewDidLoad()
+    
+    
+    deinit {
+        self.stopRunningSession()
+    }
+    
+    public func startCaptureSession(delegate: UIViewController,imageCount: Int? = nil, varienceNeeded: Double? = nil  ) {
+        
+        self.imageCount = imageCount ?? Constants.imageCountToCapture
+        self.imageVarienceNeeded = varienceNeeded ?? Constants.imageVarianceThresholdDefault
+        self.capturedImages.removeAll()
         operationQueueImgDraw.qualityOfService = .default
         operationQueueImgDraw.maxConcurrentOperationCount = 1
+        self.delegate = delegate as? FaceDetectorProtocol
         sessionQueue.async { [unowned self] in
             self.configureSession()
         }
-        
     }
     
-    override open func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.stopRunningSession()
-        self.timer.invalidate()
-    }
     
     func configureSession() {
         
@@ -69,24 +78,18 @@ open class FaceCaptureVC: UIViewController {
             
             addDeviceInput(device: cameraDevice)
             videoOutputAdded = addVideoDataOutput()
+            if videoOutputAdded {
+                startCapturingSession()
+            }
         }
     }
     
     public func startCapturingSession(imageCount: Int? = nil, varienceNeeded: Double? = nil ) {
         if videoOutputAdded {
-            self.imageCount = imageCount ?? Constants.imageCountToCapture
-            self.imageVarienceNeeded = varienceNeeded ?? Constants.imageVarianceThresholdDefault
-            self.capturedImages.removeAll()
             startRunningSession()
-            setupTimer()
         }
     }
-    
-    func setupTimer() {
-        if let timerValue = sessionDurationLimit {
-            timer = Timer.scheduledTimer(timeInterval: timerValue, target: self, selector: #selector(captureSessionTimeout), userInfo: nil, repeats: true)
-        }
-    }
+
     
     func addDeviceInput(device: AVCaptureDevice) {
         do {
@@ -98,7 +101,6 @@ open class FaceCaptureVC: UIViewController {
         catch {
             print("Error in adding device input")
         }
-        
     }
     
     func addVideoDataOutput() -> Bool {
@@ -134,7 +136,6 @@ open class FaceCaptureVC: UIViewController {
     
     @objc func captureSessionTimeout() {
         stopRunningSession()
-        timer.invalidate()
         
     }
     
@@ -146,14 +147,10 @@ open class FaceCaptureVC: UIViewController {
         }
     }
     
-    open func didCapturePhoto(images: [UIImage]) {
-        
-        
-    }
 }
 
 
-extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
+extension FaceCapture : AVCaptureVideoDataOutputSampleBufferDelegate {
     
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
@@ -237,7 +234,7 @@ extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
                 let translate = CGAffineTransform.identity.scaledBy(x: orginalImage.size.width, y: orginalImage.size.height)
                 // The coordinates are normalized to the dimensions of the processed image, with the origin at the image's lower-left corner.
                 var facebounds = face.boundingBox.applying(translate).applying(transform)
-                facebounds.size.height += 40
+                facebounds.size.height += 100
                 let cropImage = orginalImage.crop(rect: facebounds)
                 self.updateListWithImageCaptured(image: cropImage)
             }
@@ -253,7 +250,8 @@ extension FaceCaptureVC : AVCaptureVideoDataOutputSampleBufferDelegate {
                 self.startRunningSession()
             }
         } else {
-            self.didCapturePhoto(images: self.capturedImages)
+            delegate?.didCapturePhoto(images: self.capturedImages)
         }
     }
 }
+
