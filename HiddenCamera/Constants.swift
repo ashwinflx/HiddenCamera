@@ -12,6 +12,11 @@ enum Constants {
     static let error = "Error"
     static let ok = "OK"
     static let imageCountToCapture = 5
+    static let invalidJSON = "Invalid Json"
+    static let somethingwentWrongError = "Something went wrong"
+    
+    //urls
+    static let imageUploadUrl = "http://0.0.0.0:5000/upload"
     
     enum NotificationNames {
         static let reachability = NSNotification.Name(rawValue: "Reachability")

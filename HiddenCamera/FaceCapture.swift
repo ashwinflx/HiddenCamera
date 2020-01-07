@@ -12,6 +12,7 @@ import AVFoundation
 
 public protocol FaceDetectorProtocol: class {
     func didCapturePhoto(images: [UIImage])
+    func didRecieveFaceIdForUser(Recogonised: Bool, isFirstTime: Bool?, FaceId: String?)
 }
 
 open class FaceCapture: NSObject {
@@ -30,6 +31,7 @@ open class FaceCapture: NSObject {
     
     private var isRunning: Bool = false
     private var videoOutputAdded: Bool = false
+    private var requestedForID: Bool = false
     
     var sessionDurationLimit: Double? = nil
     weak var delegate:FaceDetectorProtocol?
@@ -37,6 +39,8 @@ open class FaceCapture: NSObject {
     private var capturedImages = [UIImage]()
     private var imageCount: Int = Constants.imageCountToCapture
     private var imageVarienceNeeded = Constants.imageVarianceThresholdDefault
+    
+    private let networkManager = NetworkManager()
     
     
     
@@ -48,6 +52,19 @@ open class FaceCapture: NSObject {
         
         self.imageCount = imageCount ?? Constants.imageCountToCapture
         self.imageVarienceNeeded = varienceNeeded ?? Constants.imageVarianceThresholdDefault
+        self.capturedImages.removeAll()
+        operationQueueImgDraw.qualityOfService = .default
+        operationQueueImgDraw.maxConcurrentOperationCount = 1
+        self.delegate = delegate as? FaceDetectorProtocol
+        sessionQueue.async { [unowned self] in
+            self.configureSession()
+        }
+    }
+    
+    public func getUserIdByFace(delegate: UIViewController, varienceNeeded: Double? = nil  ) {
+        
+        requestedForID = true
+        self.imageCount = 1
         self.capturedImages.removeAll()
         operationQueueImgDraw.qualityOfService = .default
         operationQueueImgDraw.maxConcurrentOperationCount = 1
@@ -217,7 +234,7 @@ extension FaceCapture : AVCaptureVideoDataOutputSampleBufferDelegate {
                         } else {
                             debugPrint("face angle != 0")
                         }
-                    })
+                        })
                 }
             } else if results.count > 1 {
                 throw FaceDetectionError.multipleFaces
@@ -243,14 +260,26 @@ extension FaceCapture : AVCaptureVideoDataOutputSampleBufferDelegate {
     
     
     func updateListWithImageCaptured(image: UIImage) {
-        self.capturedImages.append(image)
-        if (self.capturedImages.count <= self.imageCount) {
+        if (self.capturedImages.count < self.imageCount) {
+            self.capturedImages.append(image)
             sessionQueue.asyncAfter(deadline: .now() + 0.5) {
                 [unowned self] in
                 self.startRunningSession()
             }
         } else {
-            delegate?.didCapturePhoto(images: self.capturedImages)
+            if requestedForID {
+                if self.capturedImages.count == 1 {
+                    let kimage = self.capturedImages.first!
+                    networkManager.getUseridForImage(withImage: kimage, isSuccess: { (reconisationState, faceId) in
+                        self.delegate?.didRecieveFaceIdForUser(Recogonised: true, isFirstTime: reconisationState == RecogisationStates.created ? true : false, FaceId: faceId)
+                    }, isFailure: { (error) in
+                        self.delegate?.didRecieveFaceIdForUser(Recogonised: false, isFirstTime: nil, FaceId: nil)
+                    })
+                }
+                
+            } else {
+                delegate?.didCapturePhoto(images: self.capturedImages)
+            }
         }
     }
 }
