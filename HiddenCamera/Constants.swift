@@ -16,7 +16,8 @@ enum Constants {
     static let somethingwentWrongError = "Something went wrong"
     
     //urls
-    static let imageUploadUrl = "http://0.0.0.0:5000/upload"
+    static let imageUploadUrl = "http://10.6.7.59:8000/api/upload/"
+    static let nameUploadurl = "http://10.6.7.59:8000/api/updateFaceName/"
     
     enum NotificationNames {
         static let reachability = NSNotification.Name(rawValue: "Reachability")

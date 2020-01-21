@@ -12,7 +12,7 @@ import AVFoundation
 
 public protocol FaceDetectorProtocol: class {
     func didCapturePhoto(images: [UIImage])
-    func didRecieveFaceIdForUser(Recogonised: Bool, isFirstTime: Bool?, FaceId: String?)
+    func didRecieveFaceIdForUser(userDetails: User?)
 }
 
 open class FaceCapture: NSObject {
@@ -71,6 +71,12 @@ open class FaceCapture: NSObject {
         self.delegate = delegate as? FaceDetectorProtocol
         sessionQueue.async { [unowned self] in
             self.configureSession()
+        }
+    }
+    
+    public func postNameForUserId(userId:Int, name: String,isSuccess:@escaping((Bool)->Void)) {
+        networkManager.postNameForUserId(userId: userId, name: name) { (success) in
+            isSuccess(success)
         }
     }
     
@@ -262,24 +268,40 @@ extension FaceCapture : AVCaptureVideoDataOutputSampleBufferDelegate {
     func updateListWithImageCaptured(image: UIImage) {
         if (self.capturedImages.count < self.imageCount) {
             self.capturedImages.append(image)
+            if requestedForID && self.capturedImages.count == 1 {
+                
+                    let kimage = self.capturedImages.first!
+                    networkManager.getUseridForImage(withImage: kimage, isSuccess: { (user) in
+                        DispatchQueue.main.async {
+                            self.delegate?.didRecieveFaceIdForUser(userDetails: user)
+                            self.delegate?.didCapturePhoto(images: self.capturedImages)
+                        }
+                    }, isFailure: { (error) in
+                        DispatchQueue.main.async {
+                         self.delegate?.didRecieveFaceIdForUser(userDetails: nil)
+                        }
+                    })
+                
+                
+            }
             sessionQueue.asyncAfter(deadline: .now() + 0.5) {
                 [unowned self] in
                 self.startRunningSession()
             }
         } else {
-            if requestedForID {
-                if self.capturedImages.count == 1 {
-                    let kimage = self.capturedImages.first!
-                    networkManager.getUseridForImage(withImage: kimage, isSuccess: { (reconisationState, faceId) in
-                        self.delegate?.didRecieveFaceIdForUser(Recogonised: true, isFirstTime: reconisationState == RecogisationStates.created ? true : false, FaceId: faceId)
-                    }, isFailure: { (error) in
-                        self.delegate?.didRecieveFaceIdForUser(Recogonised: false, isFirstTime: nil, FaceId: nil)
-                    })
-                }
-                
-            } else {
+//            if requestedForID {
+//                if self.capturedImages.count == 1 {
+//                    let kimage = self.capturedImages.first!
+//                    networkManager.getUseridForImage(withImage: kimage, isSuccess: { (user) in
+//                        self.delegate?.didRecieveFaceIdForUser(userDetails: user)
+//                    }, isFailure: { (error) in
+//                        self.delegate?.didRecieveFaceIdForUser(userDetails: nil)
+//                    })
+//                }
+//
+//            } else {
                 delegate?.didCapturePhoto(images: self.capturedImages)
-            }
+//            }
         }
     }
 }
