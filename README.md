@@ -8,7 +8,7 @@ HiddenCamera helps to identify the user by capturing their face.
 
 * Add the below 'HiddenCamera' pod to podFile.
 
-    `pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '2.0.0'`
+    `pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '2.0.4'`
 
 * Import HiddenCamera module to file were we want to use hidden camera.
 
