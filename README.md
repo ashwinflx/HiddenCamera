@@ -1,44 +1,44 @@
-# HiddenCamera
+### Features
 
+HiddenCamera helps to identify the user by capturing their face.
 
-HiddenCamera help to take secquence of image when it detect users face.
+# Hidden Camera
 
+## Steps to use Hidden Camera
 
-##Steps to use Hidden Camera
+* Add the below 'HiddenCamera' pod to podFile.
 
-- Add pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '2.0.0' to podFile of the project.
+    `pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '2.0.0'`
 
-    ```pod 'HiddenCamera', :git => 'https://github.com/ashwinflx/HiddenCamera.git', :tag => '2.0.0'```
+* Import HiddenCamera module to file were we want to use hidden camera.
+
+    `import HiddenCamera`
     
-- Import HiddenCamera module to file were we want to use hidden camera.
+* Declare FaceCapture object globally in the controlller were we are using the HiddenCamera.
 
-   ```import HiddenCamera```
+    `var faceDetector:FaceCapture?`
     
-- Inhert View controller from HiddenCameraVC were you need to use hidden camera.
+* Assign value for the object and call the getUserIdByFace inside FaceCapture to get the users id.
 
-    ```class ViewController: FaceCaptureVC```
-    
-- call startRunningSession() function to start the session.
+    ```Swift
+    faceDetector = FaceCapture()
+    faceDetector?.getUserIdByFace(delegate: self)
+    ```
+* Conform to FaceDetectorProtocol,  didRecieveFaceIdForUser will give the user details
 
-//Imagecount: number of image to be returned. default is 5
-
-//varienceNeeded: The threshold varience with which the image need to be captured. default is 100.
-
-  
-  ```swift
-   func didPressTakePhoto(_ sender: UIButton) {
-        startCapturingSession(imageCount: 3, varienceNeeded: 75)
-   } 
- ```
- - override  didCapturePhoto(image: [UIImage]) in view controller which will gives us the images taken.
-
-     ```swift
-     override func didCapturePhoto(images: [UIImage]) {
-        self.photoPreviewView.image = image.last
+    ```Swift
+    func didRecieveFaceIdForUser(userDetails: User?) {
+        if let details = userDetails, let id = details.id {
+            progressLabel.text = "Face id: \(id)"
+        }
     }
     ```
-- Timer can be set to limit the session running time sessionDurationLimit.  
-    
-    
+ 
+ #### note
 - add <key>Privacy - Camera Usage Description</key>
 <string>APPNAME requires access to your phone’s camera.</string> to infoPlist
+
+License
+----
+
+MIT
