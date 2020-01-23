@@ -33,6 +33,14 @@ HiddenCamera helps to identify the user by capturing their face.
         }
     }
     ```
+ * Name can be provided to a user by 
+ `func postNameForUserId(userId:Int, name: String,isSuccess:@escaping((Bool)->Void))`
+ 
+ ```Swift
+ self.faceDetector?.postNameForUserId(userId: id, name: name, isSuccess: { (posted) in
+                  
+  })
+ ```
  
  #### note
 - add <key>Privacy - Camera Usage Description</key>
